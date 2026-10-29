@@ -94,6 +94,8 @@ def fetch(env, state, errors):
             msgs = discord_get("/channels/%s/messages" % cid, token, {"limit": 100})
             last = int(cs.get("last_id") or 0)
             for m in msgs:
+                if m.get("type") not in (0, 19):  # len bezne spravy a odpovede; systemove (follow, join...) preskocit
+                    continue
                 ts = datetime.fromisoformat(m["timestamp"].replace("Z", "+00:00"))
                 if int(m["id"]) <= last or ts < cutoff:
                     continue
